@@ -1,9 +1,18 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { PlusIcon } from "lucide-react";
 
 export default function SlideInput() {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    }
+  }, [isOpen]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -14,80 +23,42 @@ export default function SlideInput() {
 
   return (
     <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        border: isOpen ? "1px solid #ccc" : "none",
-        borderRadius: "24px",
-        padding: isOpen ? "4px" : "0px",
-        backgroundColor: isOpen ? "#fff" : "transparent",
-        transition: isOpen ? "all 0.3s ease-out" : "all 0.3s ease-out",
-        maxWidth: isOpen ? "480px" : "48px",
-        width: isOpen ? "480px" : "48px",
-        overflow: "hidden",
-      }}
+      className={`flex items-center rounded-3xl overflow-hidden transition-all duration-300 ease-out ${
+        isOpen
+          ? "border border-gray-300 p-1 bg-white w-[480px] max-w-[480px]"
+          : "border-none p-0 bg-transparent w-12 max-w-12"
+      }`}
     >
       <form
         onSubmit={handleSubmit}
-        style={{
-          display: "flex",
-          gap: 8,
-          alignItems: "center",
-          flex: 1,
-          opacity: isOpen ? 1 : 0,
-          minWidth: isOpen ? "240px" : "0",
-          maxWidth: isOpen ? "480px" : "0",
-          width: isOpen ? "100%" : "0",
-          transform: isOpen ? "translateX(0)" : "translateX(-100%)",
-          transition: isOpen ? "all 0.3s ease-out" : "all 0.3s ease-out",
-          overflow: "hidden",
-          pointerEvents: isOpen ? "auto" : "none",
-        }}
+        className={`flex gap-2 items-center flex-1 overflow-hidden transition-all duration-300 ease-out ${
+          isOpen
+            ? "opacity-100 min-w-[240px] max-w-[480px] w-full translate-x-0 pointer-events-auto"
+            : "opacity-0 min-w-0 max-w-0 w-0 -translate-x-full pointer-events-none"
+        }`}
       >
         <input
-          autoFocus={isOpen}
+          ref={inputRef}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="入力してください"
-          style={{
-            flex: 1,
-            minWidth: 200,
-            padding: "8px 12px",
-            border: "none",
-            outline: "none",
-            backgroundColor: "transparent",
-          }}
+          className="flex-1 min-w-[200px] py-2 px-3 border-none outline-none bg-transparent"
         />
       </form>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: "50%",
-          fontSize: 24,
-          cursor: "pointer",
-          flexShrink: 0,
-          transition: isOpen ? "all 0.3s ease-out" : "all 0.6s ease-out",
-          border: "none",
-          backgroundColor: isOpen ? "transparent" : "#007bff",
-          color: isOpen ? "#333" : "#fff",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "relative",
-          zIndex: 1,
-        }}
+        className={`w-10 h-10 rounded-full text-2xl cursor-pointer shrink-0 border-none flex items-center justify-center relative z-[1] ${
+          isOpen
+            ? "bg-transparent text-gray-700 transition-all duration-300 ease-out"
+            : "bg-blue-500 text-white transition-all duration-600 ease-out"
+        }`}
       >
         <span
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transition: isOpen ? "transform 0.3s ease-out" : "transform 0.6s ease-out",
-            transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
-            lineHeight: 0,
-          }}
+          className={`flex items-center justify-center leading-[0] ${
+            isOpen
+              ? "rotate-45 transition-transform duration-300 ease-out"
+              : "rotate-0 transition-transform duration-600 ease-out"
+          }`}
         >
           <PlusIcon size={20} />
         </span>
